@@ -2,26 +2,17 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Table from './table';
 
-function getSubjects(data){
-    let subjects = [];
-    for (let i of Object.keys(data)){
-        let subject = data[i]['Subject'];
-        if (!subjects.includes(subject)){
-            subjects.push(subject);
-        }
-    }
-    return subjects;
-}
-
 export default function Main() {
     const url = "http://localhost:3001/";
     const [data, setData] = useState();
-    const[value, setValue] = useState('');
-    const [categories, setCats] = useState()
+    const[value, setValue] = useState();
+    const [categories, setCats] = useState();
+    const [selection, setSel] = useState();
+    const [sched, setSched] = useState();
   
     useEffect(() => {
-      axios.get(`${url}search/?value=${value}`).then(result => {
-        setData(result.data);
+      axios.get(`${url}classes/?value=${value}`).then(result => {
+        setData(result.data['data']);
       });
     }, [value]);
 
@@ -31,9 +22,13 @@ export default function Main() {
       });
     }, []);
 
-    console.log(data);
-    console.log(value);
-    console.log(categories);
+    useEffect(() => {
+      axios.get(`${url}info?class=${selection}`).then(result => {
+        setSched(result.data['data']);
+      });
+    }, [selection]);
+
+    console.log(sched);
   
     return(
       <div>
@@ -48,10 +43,17 @@ export default function Main() {
           }
         </select>
         <br/>
+        <select style={{display: value ? 'block' : 'none'}} onChange={e=>setSel(e.target.value)}>
+            {
+              value ? data ? data.length > 0 ? data.map(i => {
+                return(
+                  <option value={i}>{i}</option>
+                )
+              }) : <option>No classes offered</option> : <option></option> : <option></option>
+            }
+        </select>
         {
-          data ? data['data'].length > 0 ? <Table data={data['data']}/> : 
-          <p>No classes currently offered</p> :
-          <p>select a class subject</p>
+          sched ? <Table data={sched}/> : <></>
         }
       </div>
     )
