@@ -15,9 +15,9 @@ function getSubjects(data){
 
 export default function Main() {
     const url = "http://localhost:3001/";
-    const [data, setData] = useState({data:''});
-    const[search, setSearch] = useState('');
+    const [data, setData] = useState();
     const[value, setValue] = useState('');
+    const [categories, setCats] = useState()
   
     useEffect(() => {
       axios.get(`${url}search/?value=${value}`).then(result => {
@@ -25,15 +25,34 @@ export default function Main() {
       });
     }, [value]);
 
-    console.log(search);
+    useEffect(() => {
+      axios.get(`${url}dropdown`).then(result => {
+        setCats(result.data['data'])
+      });
+    }, []);
+
     console.log(data);
     console.log(value);
+    console.log(categories);
   
     return(
       <div>
-        <Table data={data['data']}/>
-      <br/>
-      Search <input type="text" onKeyUp={e => setSearch(e.target.value)}/>&nbsp;<button onClick={() => {setValue(search)}}>Submit</button><br/>
+        <select onChange={e => setValue(e.target.value)}>
+        <option value={''}>Select a subject</option>
+          {
+            categories ? categories.map(i => {
+              return(
+                <option value={i}>{i}</option>
+              ) 
+            }) : <option></option>
+          }
+        </select>
+        <br/>
+        {
+          data ? data['data'].length > 0 ? <Table data={data['data']}/> : 
+          <p>No classes currently offered</p> :
+          <p>select a class subject</p>
+        }
       </div>
     )
   }
