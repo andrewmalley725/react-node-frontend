@@ -1,4 +1,5 @@
 import React from 'react';
+import '../static/styles.css';
 
 function getHeaders(data){
   let keys = [];
@@ -18,7 +19,7 @@ export default function Table(props){
 
     return(
         <div>
-            <table>
+            <table className='styled-table'>
                 <tr>
                     {
                         head.map(header => {

@@ -32,8 +32,8 @@ export default function Main() {
   
     return(
       <div>
-        <select onChange={e => setValue(e.target.value)}>
-        <option value={''}>Select a subject</option>
+        <select onChange={e => {setValue(e.target.value)}}>
+        <option value={''} disabled>Select a subject</option>
           {
             categories ? categories.map(i => {
               return(
@@ -42,8 +42,9 @@ export default function Main() {
             }) : <option></option>
           }
         </select>
-        <br/>
+        <br/><br/>
         <select style={{display: value ? 'block' : 'none'}} onChange={e=>setSel(e.target.value)}>
+          <option selected disabled>Choose a course</option>
             {
               value ? data ? data.length > 0 ? data.map(i => {
                 return(
@@ -53,7 +54,7 @@ export default function Main() {
             }
         </select>
         {
-          sched ? <Table data={sched}/> : <></>
+          sched ? sched.length > 0 ? <Table data={sched}/> : selection ? <p>No classes currently being taught</p> : <></> : <></>
         }
       </div>
     )

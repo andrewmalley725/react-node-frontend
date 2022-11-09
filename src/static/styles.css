@@ -1,0 +1,11 @@
+.styled-table {
+    padding-top: 2.5%;
+    width: 100%;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.styled-table th{
+    background-color: black;
+    color: white;
+}
