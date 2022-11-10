@@ -28,12 +28,12 @@ export default function Main() {
       });
     }, [selection]);
 
-    console.log(sched);
+    console.log(selection);
   
     return(
       <div>
-        <select onChange={e => {setValue(e.target.value)}}>
-        <option value={''} disabled>Select a subject</option>
+        <select onChange={e => {setValue(e.target.value); setSel()}}>
+        <option value={''} selected disabled>Select a subject</option>
           {
             categories ? categories.map(i => {
               return(
@@ -44,13 +44,15 @@ export default function Main() {
         </select>
         <br/><br/>
         <select style={{display: value ? 'block' : 'none'}} onChange={e=>setSel(e.target.value)}>
-          <option selected disabled>Choose a course</option>
+          <option selected={!selection ? true : false} disabled>
+            {data && data.length > 0 ? 'Choose a course' : 'No classes offered'}
+          </option>
             {
-              value ? data ? data.length > 0 ? data.map(i => {
+              value && data ? data.map(i => {
                 return(
                   <option value={i}>{i}</option>
                 )
-              }) : <option>No classes offered</option> : <option></option> : <option></option>
+              }) : <option></option> 
             }
         </select>
         {
