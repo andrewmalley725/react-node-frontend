@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../static/styles.css';
+import axios from 'axios';
 
 function getHeaders(data){
   let keys = [];
@@ -13,9 +14,75 @@ function getHeaders(data){
   return keys;
 }
 
+
+
+
+
 export default function Table(props){
+
+    const [show, setShow] = useState(false);
+    const [mydata, setData] = useState();
     
+    const url = "http://localhost:3001/";
     let head = getHeaders(props.data);
+
+    function handleClick(e,data){
+        e.preventDefault();
+        setShow(!show);
+        setData(data);
+    }
+
+    function Modal(props){
+
+        const [data, setData] = useState();
+
+        useEffect(() => {
+            axios.get(`${url}viewcourse?classid=${props.data}`).then(result => {
+              setData(result.data['data']['0'])
+            });
+          }, [props.data]);
+
+        console.log(data);
+
+        return(
+            show ? <div className="modal">
+                <div onClick={() => setShow(!show)} className="overlay"></div>
+                <div className="modal-content">
+                    <h2>Course Info</h2>
+                    <div>
+                        {
+                            data ? 
+                            <table className='styled-table'>
+                                <thead>
+                                    <tr>
+                                        {
+                                            Object.keys(data).map(key => {
+                                                return(<th>{key}</th>)
+                                            })
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        {
+                                            Object.keys(data).map(key => {
+                                                return(<td>{data[key]}</td>)
+                                            })
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table> 
+                            : <></>
+                        }
+                    </div>
+                    
+                    <button className="close-modal" onClick={() => setShow(!show)}>
+                    CLOSE
+                    </button>
+                </div>
+        </div> : <></>
+        )
+    }
 
     return(
         <div>
@@ -36,7 +103,7 @@ export default function Table(props){
                             {
                                 head.map(header => {
                                 return(
-                                    <td>{props.data[key][header]}</td>
+                                       header == 'classid' ? <a href='#' onClick={(e) => handleClick(e,props.data[key][header])}><td>{props.data[key][header]}</td></a> : <td>{props.data[key][header]}</td>
                                 )
                                 })
                             }
@@ -45,6 +112,7 @@ export default function Table(props){
                     })
                 }
             </table>
+            <Modal data={mydata}/>
         </div>
     )
 }
