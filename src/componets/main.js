@@ -7,6 +7,8 @@ export default function Main() {
     const [data, setData] = useState();
     const[value, setValue] = useState();
     const [categories, setCats] = useState();
+    const [sems, setSems] = useState();
+    const [sem, setSem] = useState();
     const [selection, setSel] = useState();
     const [sched, setSched] = useState();
   
@@ -23,17 +25,32 @@ export default function Main() {
     }, []);
 
     useEffect(() => {
-      axios.get(`${url}info?class=${selection}`).then(result => {
+      axios.get(`${url}semesters`).then(result => {
+        setSems(result.data);
+      });
+    },[]);
+
+    function handleChange(){
+      axios.get(`${url}info/${selection}/${sem}`).then(result => {
         setSched(result.data['data']);
       });
-    }, [selection]);
-
-    console.log(selection);
+    }
   
     return(
       <div>
-        <select onChange={e => {setValue(e.target.value); setSel()}}>
-        <option value={''} selected disabled>Select a subject</option>
+        <select onChange={e => {setSem(e.target.value); setValue()}}>
+          <option selected disabled>Select a semester</option>
+          {
+            sems ? sems.map(i => {
+              return(
+                <option value={i == 'Fall' ? 1 : 2}>{i}</option>
+              )
+            }) : <option></option>
+          }
+        </select>
+        <br/>
+        <select style={{display: sem ? 'block' : 'none'}} onChange={e => {setValue(e.target.value); setSel()}}>
+        <option selected={value ? false : true} disabled>Select a subject</option>
           {
             categories ? categories.map(i => {
               return(
@@ -42,8 +59,8 @@ export default function Main() {
             }) : <option></option>
           }
         </select>
-        <br/><br/>
-        <select style={{display: value ? 'block' : 'none'}} onChange={e=>setSel(e.target.value)}>
+        <br/>
+        <select style={{display: value ? 'block' : 'none'}} onChange={e=>{setSel(e.target.value)}}>
           <option selected={!selection ? true : false} disabled>
             {data && data.length > 0 ? 'Choose a course' : 'No classes offered'}
           </option>
@@ -55,6 +72,8 @@ export default function Main() {
               }) : <option></option> 
             }
         </select>
+        <br/>
+        <button type="button" onClick={() => handleChange()}>Load classed</button>
         {
           sched ? sched.length > 0 ? <Table data={sched}/> : selection ? <p>No classes currently being taught</p> : <></> : <></>
         }

@@ -14,10 +14,6 @@ function getHeaders(data){
   return keys;
 }
 
-
-
-
-
 export default function Table(props){
 
     const [show, setShow] = useState(false);
@@ -42,8 +38,6 @@ export default function Table(props){
             });
           }, [props.data]);
 
-        console.log(data);
-
         return(
             show ? <div className="modal">
                 <div onClick={() => setShow(!show)} className="overlay"></div>
@@ -52,26 +46,12 @@ export default function Table(props){
                     <div>
                         {
                             data ? 
-                            <table className='styled-table'>
-                                <thead>
-                                    <tr>
-                                        {
-                                            Object.keys(data).map(key => {
-                                                return(<th>{key}</th>)
-                                            })
-                                        }
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        {
-                                            Object.keys(data).map(key => {
-                                                return(<td>{data[key]}</td>)
-                                            })
-                                        }
-                                    </tr>
-                                </tbody>
-                            </table> 
+                            <div>
+                                <p><b>Course:</b> {data['course']}</p>
+                                <p><b>Instructor:</b> {data['taughtBy']}</p>
+                                <p><b>Days Taught:</b> {data['schedule']}</p>
+                                <p><b>Time:</b> {data['time']}</p>
+                            </div>
                             : <></>
                         }
                     </div>
