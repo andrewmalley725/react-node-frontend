@@ -38,7 +38,7 @@ export default function Main() {
   
     return(
       <div>
-        <select onChange={e => {setSem(e.target.value); setValue()}}>
+        <select onChange={e => {setSem(e.target.value); setValue(); setSel(); setSched()}}>
           <option selected disabled>Select a semester</option>
           {
             sems ? sems.map(i => {
@@ -48,8 +48,8 @@ export default function Main() {
             }) : <option></option>
           }
         </select>
-        <br/>
-        <select style={{display: sem ? 'block' : 'none'}} onChange={e => {setValue(e.target.value); setSel()}}>
+        <br/><br/>
+        <select style={{display: sem ? 'block' : 'none'}} onChange={e => {setValue(e.target.value); setSel(); setSched()}}>
         <option selected={value ? false : true} disabled>Select a subject</option>
           {
             categories ? categories.map(i => {
@@ -60,7 +60,7 @@ export default function Main() {
           }
         </select>
         <br/>
-        <select style={{display: value ? 'block' : 'none'}} onChange={e=>{setSel(e.target.value)}}>
+        <select style={{display: value ? 'block' : 'none'}} onChange={e=>{setSel(e.target.value); setSched()}}>
           <option selected={!selection ? true : false} disabled>
             {data && data.length > 0 ? 'Choose a course' : 'No classes offered'}
           </option>
@@ -73,9 +73,9 @@ export default function Main() {
             }
         </select>
         <br/>
-        <button type="button" onClick={() => handleChange()}>Load classed</button>
+        <button type="button" onClick={() => handleChange()} style={{display: selection ? 'block' : 'none'}}>Load classes</button>
         {
-          sched ? sched.length > 0 ? <Table data={sched}/> : selection ? <p>No classes currently being taught</p> : <></> : <></>
+          sched && selection && sem ? sched.length > 0 ? <Table data={sched}/> : selection ? <p>No classes currently being taught</p> : <></> : <></>
         }
       </div>
     )
